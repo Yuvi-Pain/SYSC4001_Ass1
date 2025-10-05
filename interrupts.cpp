@@ -18,9 +18,11 @@ int main(int argc, char** argv) {
     std::string trace;      //!< string to store single line of trace file
     std::string execution;  //!< string to accumulate the execution output
 
-    /******************ADD YOUR VARIABLES HERE*************************/
-
-
+    /****************** VARIABLES ******************/
+    
+    int current_time = 0;           // keeps track of simulation time (in ms)
+    int context_save_time = 10;     // time to save/restore CPU context
+    int isr_activity_time = 40;     // time for each ISR step (as given in spec)
 
     /******************************************************************/
 
@@ -28,9 +30,13 @@ int main(int argc, char** argv) {
     while(std::getline(input_file, trace)) {
         auto [activity, duration_intr] = parse_trace(trace);
 
-        /******************ADD YOUR SIMULATION CODE HERE*************************/
+        /****************** MAIN SIMULATION ******************/
 
-
+        if (activity == "CPU") {
+            // CPU burst: program is running on the CPU normally
+            execution += std::to_string(current_time) + ", "+ std::to_string(duration_intr) + ", CPU Burst\n";
+            current_time += duration_intr;
+        }
 
         /************************************************************************/
 
