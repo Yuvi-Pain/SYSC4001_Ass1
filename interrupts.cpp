@@ -66,7 +66,27 @@ int main(int argc, char** argv) {
             }
 
             /************************************************************************/
+            else if (activity == "END_IO") {
+            //End of I/O: device signals that it finished its operation
+            int device_num = duration_intr;
             
+            //runs the boilerplate (switch to kernel mode, save context, etc.)
+            auto [boilerplate_str, new_time] = intr_boilerplate(current_time, device_num, context_save_time, vectors);
+            execution += boilerplate_str;
+            current_time = new_time;
+            
+            //Step 1: run the ISR for device completion
+            execution += std::to_string(current_time) + ", " + std::to_string(isr_activity_time) + ", ENDIO: run the ISR (device driver)\n";
+            current_time += isr_activity_time;
+            
+            //Step 2: check device status (whatever time is left from the device delay)
+            int device_delay = delays.at(device_num);
+            int remaining_time = device_delay - isr_activity_time;
+            
+            if (remaining_time > 0) {
+                execution += std::to_string(current_time) + ", " + std::to_string(remaining_time) + ", check device status\n";
+                current_time += remaining_time;
+            }
             
         }
 
