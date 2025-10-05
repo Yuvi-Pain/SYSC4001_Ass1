@@ -65,6 +65,11 @@ int main(int argc, char** argv) {
                 current_time += remaining_time;
             }
 
+            //return from interrupt (IRET)
+            execution += std::to_string(current_time) + ", " + std::to_string(1) + ", IRET\n";
+            current_time += 1;
+        }
+
             /************************************************************************/
             else if (activity == "END_IO") {
             //End of I/O: device signals that it finished its operation
@@ -87,14 +92,19 @@ int main(int argc, char** argv) {
                 execution += std::to_string(current_time) + ", " + std::to_string(remaining_time) + ", check device status\n";
                 current_time += remaining_time;
             }
-            
+                
+            //return from interrupt (IRET)
+            execution += std::to_string(current_time) + ", " + std::to_string(1) + ", IRET\n";
+            current_time += 1;
         }
-
     }
 
     input_file.close();
+    
+    //testing to see if it worked
+    std::cout << "Execution string length: " << execution.length() << " characters\n";
+    std::cout << "Writing to execution.txt...\n";
 
     write_output(execution);
-
     return 0;
 }
