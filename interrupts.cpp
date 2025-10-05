@@ -1,7 +1,7 @@
 /**
  *
  * @file interrupts.cpp
- * @author Sasisekhar Govind
+ * @authors Jared St.Louis & Yuvraj Bains 
  *
  */
 
