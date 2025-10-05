@@ -39,6 +39,36 @@ int main(int argc, char** argv) {
         }
 
         /************************************************************************/
+        else if (activity == "SYSCALL") {
+            //System call: CPU requests an I/O operation
+            int device_num = duration_intr;  //duration_intr = device number here
+            
+            //run the boilerplate sequence (switch to kernel mode, save context, etc.)
+            auto [boilerplate_str, new_time] = intr_boilerplate(current_time, device_num,context_save_time, vectors);
+            execution += boilerplate_str;
+            current_time = new_time;
+            
+            //Step 1: run the ISR (device driver)
+            execution += std::to_string(current_time) + ", " + std::to_string(isr_activity_time) + ", SYSCALL: run the ISR (device driver)\n";
+            current_time += isr_activity_time;
+            
+            //Step 2: transfer data between device and memory
+            execution += std::to_string(current_time) + ", " + std::to_string(isr_activity_time) + ", transfer data from device to memory\n";
+            current_time += isr_activity_time;
+            
+            //Step 3: checking for errors (whatever time is left from the device delay)
+            int device_delay = delays.at(device_num);
+            int remaining_time = device_delay - (2 * isr_activity_time);
+            
+            if (remaining_time > 0) {
+                execution += std::to_string(current_time) + ", " + std::to_string(remaining_time) + ", check for errors\n";
+                current_time += remaining_time;
+            }
+
+            /************************************************************************/
+            
+            
+        }
 
     }
 
